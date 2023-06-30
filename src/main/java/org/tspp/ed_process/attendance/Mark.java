@@ -10,25 +10,30 @@ public final class Mark {
     }
 
     Mark(Student s, Value v) {
+        this.student = s;
+        this.value = v;
     }
 
     public final Value getValue() {
-        return null;
+        return this.value;
     }
 
     public final Student getStudent() {
-        return null;
+        return this.student;
     }
 
     public final boolean isAttended() {
-        return false;
+        return this.value == Value.ATTENDED;
     }
 
     public final boolean isLate() {
-        return false;
+        return this.value == Value.LATE;
     }
 
     public final boolean isNotPresented() {
-        return false;
+        return this.value == Value.NOT_PRESENTED;
     }
+
+    private final Student student;
+    private final Value value;
 }
