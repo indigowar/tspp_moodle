@@ -3,6 +3,7 @@ package org.tspp.ed_process;
 import org.tspp.users.Teacher;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public final class Subject {
 
@@ -32,7 +33,7 @@ public final class Subject {
     }
 
     public boolean hasGroup(Group g) {
-        return false;
+        return groups.stream().anyMatch(i -> Objects.equals(i, g));
     }
 
 
