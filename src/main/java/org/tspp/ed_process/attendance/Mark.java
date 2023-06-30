@@ -9,7 +9,7 @@ public final class Mark {
         NOT_PRESENTED
     }
 
-    Mark(Student s, Value v) {
+    public Mark(Student s, Value v) {
         this.student = s;
         this.value = v;
     }

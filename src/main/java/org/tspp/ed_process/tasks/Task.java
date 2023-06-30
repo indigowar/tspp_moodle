@@ -59,6 +59,19 @@ public class Task {
         throw new RuntimeException("task has no pending submissions");
     }
 
+    public final boolean hasSubmissionOfStudent(Student student) {
+        return submissions.containsKey(student);
+    }
+
+    public final boolean hasSuccessfullyDone(Student student) {
+        if (!hasSubmissionOfStudent(student)) {
+            return false;
+        }
+        var submission = getSubmissionForStudent(student);
+
+        return submission.isSuccessfullyDone();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
