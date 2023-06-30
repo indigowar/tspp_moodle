@@ -23,6 +23,7 @@ public final class Subject {
             throw new IllegalArgumentException("this group is already has this subject");
         }
         groups.add(g);
+        g.addSubject(this);
     }
 
     public void removeGroup(Group g) throws IllegalArgumentException {
@@ -30,6 +31,7 @@ public final class Subject {
             throw new IllegalArgumentException("this group does not have this subject");
         }
         groups.remove(g);
+        g.removeSubject(this);
     }
 
     public boolean hasGroup(Group g) {

@@ -10,6 +10,8 @@ public final class Group {
     public Group(String name) {
         this.name = name;
         this.students = new ArrayList<>();
+
+        this.subjects = new ArrayList<>();
     }
 
     public String getName() {
@@ -36,6 +38,22 @@ public final class Group {
         }
     }
 
+    public final ArrayList<Subject> getSubjects() {
+        return subjects;
+    }
+
+    public final boolean hasSubject(Subject s) {
+        return subjects.stream().anyMatch(i -> Objects.equals(i, s));
+    }
+
+    public final void addSubject(Subject s) {
+        subjects.add(s);
+    }
+
+    public final void removeSubject(Subject s) {
+        subjects.remove(s);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -50,4 +68,5 @@ public final class Group {
 
     private final String name;
     private final ArrayList<Student> students;
+    private final ArrayList<Subject> subjects;
 }
