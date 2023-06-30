@@ -10,7 +10,6 @@ public class SubmissionTest {
     private final Grade grade_40 = new Grade(40);
     private final Grade grade_60 = new Grade(60);
 
-
     @Test
     public void testLimitConstructor() {
         Submission s = new Submission(5);
@@ -19,30 +18,35 @@ public class SubmissionTest {
         s = new Submission(1);
         assertEquals(1, s.getLimit());
 
+        // Cannot create a Submission with limit below or equal zero.
         assertThrows(IllegalArgumentException.class, () -> new Submission(0));
-        assertThrows(IllegalArgumentException.class, () -> new Submission(1));
+        assertThrows(IllegalArgumentException.class, () -> new Submission(-1));
     }
 
     @Test
-    public void addAttempt() {
+    public void testAddAttempt() {
         Submission s = new Submission(3);
+        Attempt a1 = new Attempt("some text");
+        Attempt a2 = new Attempt("some text");
+        Attempt a3 = new Attempt("some text");
+        Attempt a4 = new Attempt("some text");
 
-        Attempt a = new Attempt("text");
-        a.grade(grade_60);
+        s.addAttempt(a1);
+        s.addAttempt(a2);
+        s.addAttempt(a3);
 
-        assertThrows(IllegalArgumentException.class, () -> s.addAttempt(a));
+        // here buffer of attempts is already full, we can't add new.
+        assertThrows(RuntimeException.class, () -> s.addAttempt(a4));
 
-        s.addAttempt(new Attempt("text"));
-        s.addAttempt(new Attempt("text"));
-        s.addAttempt(new Attempt("text"));
-
-        assertThrows(RuntimeException.class, () -> s.addAttempt(new Attempt("text")));
+        // trying to add an attempt that is already graded.
+        Attempt a5 = new Attempt("some text");
+        a5.grade(new Grade(50));
+        assertThrows(IllegalArgumentException.class, () -> s.addAttempt(a5));
     }
 
     @Test
     public void testHasUncheckedAttempts() {
-        Submission s = new Submission(3);
-
+        Submission s = new Submission(5);
         Attempt a1 = new Attempt("some text");
         Attempt a2 = new Attempt("some text");
         Attempt a3 = new Attempt("some text");
@@ -76,14 +80,14 @@ public class SubmissionTest {
         s.addAttempt(a3);
 
         assertEquals(a1, s.getUnchecked());
+
         a1.grade(grade_60);
         assertEquals(a2, s.getUnchecked());
     }
 
-
     @Test
     public void testGetMaxGrade() {
-        Submission s = new Submission(3);
+        Submission s = new Submission(5);
         Attempt a1 = new Attempt("some text");
         Attempt a2 = new Attempt("some text");
         Attempt a3 = new Attempt("some text");
@@ -99,9 +103,9 @@ public class SubmissionTest {
         // Without grading any attempts, getMaxGrade should return 0 grade
         assertEquals(new Grade(0), s.getMaxGrade());
 
-        a1.grade(g1);
-        a2.grade(g2);
-        a3.grade(g3);
+        a1.grade(grade_20);
+        a2.grade(grade_30);
+        a3.grade(grade_40);
 
         // max grade will g3, because it has the highest value - 40.
         assertEquals(g3, s.getMaxGrade());
@@ -142,6 +146,5 @@ public class SubmissionTest {
 
         assertTrue(s.isSuccessfullyDone());
     }
-
 
 }
