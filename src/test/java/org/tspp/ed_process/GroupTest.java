@@ -1,5 +1,6 @@
 package org.tspp.ed_process;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -7,10 +8,19 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.tspp.users.Student;
 
 public class GroupTest {
-    private final Group group;
+    private Group group;
 
-    private final Student student1;
-    private final Student student2;
+    private Student student1;
+    private Student student2;
+
+
+    @BeforeEach
+    void setUp() {
+        group = new Group("Test Group");
+        student1 = new Student("John", "John", "Doe", "jjdoe@gmail.com", "password");
+        student2 = new Student("Jane", "Jenny", "Smith", "jjsmith@gmail.com", "password");
+    }
+
 
     @Test
     void testGetName() {
