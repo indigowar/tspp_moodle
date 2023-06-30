@@ -26,7 +26,7 @@ public class AttemptTest {
             attempt.grade(new Grade(90));
         });
 
-        assertEquals(80, attempt.getGrade().getValue());
+        assertEquals(80, attempt.getGrade().get());
     }
 
     @Test
