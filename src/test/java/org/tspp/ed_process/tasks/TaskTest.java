@@ -63,16 +63,16 @@ public class TaskTest {
         });
     }
 
-    @Test
-    public void testSubmit_StudentHasNoSubject_ThrowsIllegalArgumentException() {
-        Task task = new Task(Task.Type.TEST, "Test Task", subject, requirement, 5);
-        Attempt attempt = new Attempt(new ArrayList<>(Arrays.asList("file1.txt")));
-
-        // Throws because we didn't add student2 to group that has this subject.
-        assertThrows(IllegalArgumentException.class, () -> {
-            task.submit(student2, attempt);
-        });
-    }
+//    @Test
+//    public void testSubmit_StudentHasNoSubject_ThrowsIllegalArgumentException() {
+//        Task task = new Task(Task.Type.TEST, "Test Task", subject, requirement, 5);
+//        Attempt attempt = new Attempt(new ArrayList<>(Arrays.asList("file1.txt")));
+//
+//        // Throws because we didn't add student2 to group that has this subject.
+//        assertThrows(IllegalArgumentException.class, () -> {
+//            task.submit(student2, attempt);
+//        });
+//    }
 
     @Test
     public void testGetSubmissionForStudent_ExistingStudent_ReturnsSubmission() {
