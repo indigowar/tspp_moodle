@@ -1,9 +1,6 @@
 package org.tspp.services;
 
-import org.tspp.users.Teacher;
-
 import java.util.Objects;
-import java.util.Optional;
 
 public class AuthService {
 
