@@ -59,6 +59,15 @@ public class Task {
         throw new RuntimeException("task has no pending submissions");
     }
 
+    public final boolean hasPendingSubmissions() {
+        for (final var sub : submissions.values()) {
+            if (sub.hasUncheckedAttempts()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public final boolean hasSubmissionOfStudent(Student student) {
         return submissions.containsKey(student);
     }
