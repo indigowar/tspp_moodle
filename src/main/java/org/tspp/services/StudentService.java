@@ -56,6 +56,29 @@ public class StudentService {
         return result;
     }
 
+    public final ArrayList<GradeInfo> seeGrades(Subject subject) {
+        if (!student.hasSubject(subject)) {
+            throw new IllegalArgumentException("logged in student does not have this subject");
+        }
+        var result = new ArrayList<GradeInfo>();
+        subject.getTasks().forEach(t -> result.add(makeGradeInfoFromTask(t)));
+        return result;
+    }
+
+    public final ArrayList<GradeInfo> seeGrades(Task.Type type) {
+        var result = new ArrayList<GradeInfo>();
+
+        getMySubjects().forEach(s -> {
+            s.getTasks()
+                    .stream()
+                    .filter(t -> Objects.equals(t.getType(), type))
+                    .forEach(i -> result.add(makeGradeInfoFromTask(i)));
+        });
+
+        return result;
+    }
+
+
     public final ArrayList<Task> seeAcademicDebt() {
         var result = new ArrayList<Task>();
 
