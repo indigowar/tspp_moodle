@@ -1,0 +1,54 @@
+@startuml use-cases
+
+left to right direction
+
+"Student" as Student
+"Teacher" as Teacher
+
+package moodle_for_smart {
+
+"See grades" as (SeeGrades)
+"See academic debt" as (SeeAcademDebt)
+"Submit a solution on a open task" as (SubmitSolution)
+"See personal attendance statistic" as (SeePAttendace)
+
+"See with filtration by subject" as (SeeWithFilterBySubject)
+"See with filtration by task type" as (SeeWIthFilterByTaskType)
+
+' teacher
+"Set Student's Attendance" as (SetAttendance)
+"Grade a mark to submission " as (GradeSubmission)
+"Create a task with specific type" as (CreateTask)
+
+' Methodist
+
+"See grades all" as (SeeGradesByDean)
+"See grades by subject" as (GradesBySubject)
+"See grades by group" as (GradesByGroup)
+"See grades by learning year" as (SeeGradesLearningYear)
+
+"Build a deductible list of student" as (DeductibleList)
+}
+
+
+Student -- (SeeGrades)
+Student -- (SeeAcademDebt)
+
+(SeeWithFilterBySubject) .up.> (SeeGrades) : extends
+(SeeWithFilterBySubject) .up.> (SeeAcademDebt): extends
+(SeeWIthFilterByTaskType) .up.> (SeeGrades): extends
+(SeeWIthFilterByTaskType) .up.> (SeeAcademDebt): extends
+
+Student -- (SubmitSolution)
+Student -- (SeePAttendace)
+
+
+Teacher -- (SetAttendance)
+Teacher -- (GradeSubmission)
+Teacher -- (CreateTask)
+
+(GradesByGroup) .up.> (SeeGradesByDean) : extends
+(GradesBySubject) .up.> (SeeGradesByDean) : extends
+(SeeGradesLearningYear) .up.> (SeeGradesByDean) : extends
+
+@enduml

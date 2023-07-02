@@ -1,0 +1,24 @@
+@startuml
+
+title Diagram of submitting a solution to Task by Student(StudentService)
+
+StudentService --> Task : submit to the task
+Task --> Requirement : check if attempt satisfies
+
+alt attempt satisfies the requirement
+Requirement --> Task: true
+Task --> Submission : add the attempt
+alt submission is added
+Submission --> Task
+Task --> StudentService
+else attempt is already graded
+Submission --> StudentService : inform that attempt is invalid and graded
+else submission is full
+Submission --> StudentService : inform that submission is full, and student can't add new attempts.
+end
+else attempt does not satisfies the requirement
+Requirement --> Task: false
+Task --> StudentService: throws exception that attempt is invalid
+end
+
+@enduml

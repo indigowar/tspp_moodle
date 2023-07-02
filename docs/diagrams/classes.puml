@@ -1,0 +1,311 @@
+@startuml
+
+package users {
+
+class User {
+    + User(name, patronymic, surname, mail, password)
+    + String getName()
+    + String getPatronymic()
+    + String getSurname()
+    + String getMail()
+
+    + validatePassword(String passphrase)
+
+    - String name
+    - String patronymic
+    - String surname
+    - String mail
+    - String password
+}
+
+class Student {
+    + Student(name, patronymic, surname, mail, password)
+    + void joinGroup(Group)
+    + void leaveGroup(Group)
+    + boolean isInGroup(Group)
+    + boolean hasSubject(Subject)
+
+    - Array<Group> groups
+}
+
+class Teacher {
+    + Teacher(name, patronymic, surname, mail, password)
+    + Subject createSubject(String title)
+    + Array<Subject> getSubjects()
+    + Array<Task getTasksWithPendingSubmissions()
+    + Array<Task> getTasksWithPendingSubmissionsForSubject(Subject)
+    + void setStudentAttendance(Lesson, Student, MarkValue)
+    + Task createTask(Subject, TaskType, String, Requirement, int limit)
+
+    - Array<Subject> subjects
+}
+
+Student --|> User
+Teacher --|> User
+
+}
+
+package ed_process {
+
+class Subject {
+    + Subject(String title, Teacher)
+    + String getTitle()
+    + void addGroup(Group)
+    + void removeGroup(Group)
+    + boolean hasGroup(Group)
+    + Task createTask(Teacher, TaskType, String name, Requirement, int limit)
+    + Array<Task> getTasks()
+    + Lesson createLesson(Teacher, LessonType, String title, DateTime time)
+    + Array<Lesson> getLessons()
+
+    - String title
+    - Teacher teacher
+    - Array<Group> groups
+    - Array<Task> tasks
+    - Array<Lesson> lessons
+}
+
+
+
+class Group {
+    + Group(String name)
+    + String getName()
+    + boolean hasStudent(Student)
+    + void addStudent(Student)
+    + void removeStudent(Student s)
+    + Array<Subject> getSubjects()
+    + boolean hasSubject(Subject)
+    + void addSubject(Subject)
+    + void removeSubject(Subject)
+
+    - String name
+    - Array<Student> students
+    - Array<Subject> subjects
+}
+
+Group --o Student
+Group --o Subject
+
+
+package attendance {
+
+enum MarkValue {
+    ATTENDED,
+    LATE,
+    NOT_PRESENTED
+}
+
+class Mark {
+    + Mark(Student student, Value v)
+    + MarkValue getValue()
+    + Student getStudent()
+    + boolean isAttended()
+    + boolean isLate()
+    + boolean isNotPresented()
+
+    - Student student
+    - MarkValue value
+}
+
+Mark --o Student
+Mark --* MarkValue
+
+enum LessonType {
+    LABORATORY,
+    PRACTICAL,
+    LECTURE
+}
+
+class Lesson {
+    + Lesson(Subject, LessonType, String title, DateTime)
+    + LessonType getType()
+    + String getTitle()
+    + Subject getSubject()
+    + DateTime getTime()
+    + boolean hasMark(Student)
+    + Mark getStudentMark(Student)
+    + void setAttendance(Student, MarkValue)
+    + Array<Mark> getMarks()
+
+    - LessonType type
+    - String title
+    - Array<Mark> marks
+    - Subject subject
+    - DateTime time
+}
+
+Lesson --o LessonType
+Lesson --o Mark
+Lesson --* Subject
+}
+
+package tasks {
+
+class Grade {
+    + Grade(int)
+    + int get()
+    + boolean isSatisfactory()
+    - int value
+}
+
+class Attempt {
+    + Attempt(Array<String> files)
+    + Attempt(String text)
+    + Attempt(String text, Array<String> files)
+
+    + boolean isGraded()
+    + void grade(Grade g)
+    + Grade getGrade()
+    + boolean hasFiles()
+    + boolean hasText()
+    + Array<String> getFiles()
+    + String getText()
+
+
+    - Array<String> files
+    - String text
+
+    - Optional<Grade> grade
+}
+
+Attempt --* Grade
+
+class Submission {
+    + Submission(int limit)
+
+    + int getLimit()
+    + void addAttempt(Attempt)
+    + boolean hasUncheckedAttempts()
+    + Attempt getUnchecked()
+    + Grade getMaxGrade()
+    + boolean isSuccessfullyDone()
+
+    - int limit
+    - Array<Attempt> attempts
+}
+Submission --* Attempt
+
+
+interface Requirement {
+    + isSatisfiedBy(Attempt a)
+}
+
+Requirement ..> Attempt
+
+class TextRequirement {
+    + TextRequirement(boolean)
+    + boolean isSatisfiedBy(Attempt)
+    - boolean hasText
+}
+TextRequirement ..|> Requirement
+
+class FileRequirementByExtension {
+    + FileRequirementByExtension(Array<String> file_exts)
+    + boolean isSatisfiedBy(Attempt)
+    - Array<String> file_extensions
+}
+
+FileRequirementByExtension ..|> Requirement
+
+class MultipleRequirement {
+    + MultipleRequirement(Array<Requirement>)
+    + boolean isSatisfiedBy(Attempt a)
+    - Array<Requirement> reqs
+}
+MultipleRequirement ..|> Requirement
+
+enum TaskType {
+    LABORATORY
+    RGR
+    TEST
+    EXAM
+}
+
+class Task {
+    + Task(TaskType, String title, Subject, Requirement, int limit)
+    + String getName()
+    + TaskType getType()
+    + void submit(Student, Attempt)
+    + Submission getSubmissionForStudent(Student)
+    + Submission getPendingSubmission()
+    + boolean hasPendingSubmissions()
+    + boolean hasSubmissionOfStudent(Student)
+    + boolean hasSuccessfullyDone(Student)
+
+    - int limit
+    - TaskType type
+    - Requirement req
+    - Map<Student, Submission> submissions
+    - String name
+    - Subject subject
+}
+
+Task --* TaskType
+Task --o Requirement
+Task --o Student
+Task --* Submission
+Task ---o Subject
+
+
+Subject --o Teacher
+Subject --o Group
+Subject --* Task
+Subject --* Lesson
+}
+}
+
+package services {
+
+class Storages {
+    + Array<Subject> getSubjects()
+    + Array<Student> getStudents()
+    + Array<Teacher> getTeachers()
+}
+
+class AuthService {
+    + AuthService(Storages)
+    + StudentService logInAsStudent(String mail, String password)
+    + TeacherService logInAsTeacher(String mail, String password)
+    - Storages storages
+}
+AuthService --o Storages
+
+class StudentService {
+    - Storages storages
+    - Student student
+
+    + StudentService(Storages, Student)
+    + Array<Subject> getMySubjects()
+    + Array<Group> getMyGroups()
+    + Array<GradeInfo> seeGrades()
+    + Array<GradeInfo> seeGrades(Subject)
+    + Array<GradeInfo> seeGrades(TaskType)
+    + Array<Task> seeAcademicDebt()
+    + Array<AttendanceInfo> seeAttendance()
+    + Array<AttendanceInfo> seeAttendance(Subject)
+    + Array<AttendanceInfo> seeAttendance(LessonType)
+    + void submitTask(Task Attempt)
+}
+StudentService --o Storages
+StudentService --o Student
+
+class TeacherService {
+    - Storages storage
+    - Teacher teacher
+
+    + TeacherService(Storages, Teacher)
+    + Array<Subject> getSubject()
+    + Subject createSubject(String)
+    + Array<Task> getPendingTasks(Subject)
+    + void gradeAttempt(Attempt a, int value)
+    + void setStudentAttendance(Lesson, Student, MarkValue)
+    + Task createOnlyTextTask(Subject, TaskType, String, int limit)
+    + Task createTaskWithFileRequirement(Subject, TaskType, String, int limit, Array<String> extensions, boolean hasText)
+    + Task createTaskWithCustomRequirements(Subject, TaskType, String title, Requirement req, int limit)
+}
+TeacherService --o Storages
+TeacherService --o Teacher
+
+}
+
+@enduml
